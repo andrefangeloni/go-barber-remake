@@ -27,13 +27,13 @@ class AuthenticateUserService {
     });
 
     if (!user) {
-      throw new AppError('Invalid credentials!', 401);
+      throw new AppError('invalid-credentials', 401);
     }
 
     const passwordMatched = await compare(password, user.password);
 
     if (!passwordMatched) {
-      throw new AppError('Invalid credentials!', 401);
+      throw new AppError('invalid-credentials', 401);
     }
 
     const { secret, expiresIn } = authConfig.jwt;
