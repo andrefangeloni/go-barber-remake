@@ -15,6 +15,7 @@ sessionsRouter.post('/', async (req, res) => {
     id: user.id,
     name: user.name,
     email: user.email,
+    avatar: user.avatar,
   };
 
   res.json({ user: userWithoutPassword, token });
