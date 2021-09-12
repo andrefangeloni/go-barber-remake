@@ -2,26 +2,56 @@ import React from 'react';
 
 import api from '../services/api';
 
+interface AuthState {
+  token: string;
+  user: object;
+}
+
 interface SignInCredredentials {
   email: string;
   password: string;
 }
 
 interface AuthContextData {
-  name: string;
+  user: object;
   signIn(credentials: SignInCredredentials): Promise<void>;
+  signOut(): void;
 }
 
 const AuthContext = React.createContext<AuthContextData>({} as AuthContextData);
 
 const AuthProvider: React.FC = ({ children }) => {
+  const [data, setData] = React.useState<AuthState>(() => {
+    const token = localStorage.getItem('@GoBarber:token');
+    const user = localStorage.getItem('@GoBarber:user');
+
+    if (token && user) {
+      return { token, user: JSON.parse(user) };
+    }
+
+    return {} as AuthState;
+  });
+
   const signIn = React.useCallback(async ({ email, password }) => {
-    const { data } = await api.post('/sessions', { email, password });
-    console.log(data);
+    const {
+      data: { token, user },
+    } = await api.post('/sessions', { email, password });
+
+    localStorage.setItem('@GoBarber:token', token);
+    localStorage.setItem('@GoBarber:user', JSON.stringify(user));
+
+    setData({ token, user });
+  }, []);
+
+  const signOut = React.useCallback(() => {
+    localStorage.removeItem('@GoBarber:token');
+    localStorage.removeItem('@GoBarber:user');
+
+    setData({} as AuthState);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ name: 'André', signIn }}>
+    <AuthContext.Provider value={{ user: data.user, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );
