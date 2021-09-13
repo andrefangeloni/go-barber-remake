@@ -1,8 +1,8 @@
 import React from 'react';
 import * as Yup from 'yup';
 import { Form } from '@unform/web';
-import { Link } from 'react-router-dom';
 import { FormHandles } from '@unform/core';
+import { Link, useHistory } from 'react-router-dom';
 import { FiLogIn, FiMail, FiLock } from 'react-icons/fi';
 
 import logoImg from '../../assets/logo.svg';
@@ -24,6 +24,8 @@ interface SignInFormData {
 
 const SignIn: React.FC = () => {
   const formRef = React.useRef<FormHandles>(null);
+
+  const history = useHistory();
 
   const { signIn } = useAuth();
   const { addToast } = useToast();
@@ -48,6 +50,8 @@ const SignIn: React.FC = () => {
           email: data.email,
           password: data.password,
         });
+
+        history.push('/dashboard');
       } catch (err: any) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -63,7 +67,7 @@ const SignIn: React.FC = () => {
         });
       }
     },
-    [signIn, addToast],
+    [history, signIn, addToast],
   );
 
   return (
