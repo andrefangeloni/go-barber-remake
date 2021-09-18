@@ -18,7 +18,7 @@ interface InputRef {
   focus(): void;
 }
 
-const Input: React.RefForwardingComponent<InputRef, InputProps> = (
+const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
   { name, icon, ...rest },
   ref,
 ) => {
@@ -29,6 +29,19 @@ const Input: React.RefForwardingComponent<InputRef, InputProps> = (
   const inputValueRef = React.useRef<InputValueReference>({
     value: defaultValue,
   });
+
+  const [isFilled, setIsFilled] = React.useState(false);
+  const [isFocused, setIsFocused] = React.useState(false);
+
+  const handleInputFocus = React.useCallback(() => {
+    setIsFocused(true);
+  }, []);
+
+  const handleInputBlur = React.useCallback(() => {
+    setIsFocused(false);
+
+    setIsFilled(!!inputValueRef.current.value);
+  }, []);
 
   React.useImperativeHandle(ref, () => ({
     focus() {
@@ -53,14 +66,16 @@ const Input: React.RefForwardingComponent<InputRef, InputProps> = (
   }, [fieldName, registerField]);
 
   return (
-    <Container>
-      <Icon name={icon} size={20} color="#666360" />
+    <Container isFocused={isFocused}>
+      <Icon name={icon} highlight={isFocused || isFilled} />
 
       <TextInput
         ref={inputElementRef}
         placeholderTextColor="#666360"
         {...rest}
         defaultValue={defaultValue}
+        onFocus={() => handleInputFocus()}
+        onBlur={() => handleInputBlur()}
         onChangeText={(text) => {
           inputValueRef.current.value = text;
         }}
