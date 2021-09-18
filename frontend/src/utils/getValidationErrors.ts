@@ -5,7 +5,6 @@ interface Errors {
 }
 
 const getValidationErrors = (err: ValidationError): Errors => {
-console.log("🚀 ~ file: getValidationErrors.ts ~ line 8 ~ getValidationErrors ~ err", err.inner)
   const validationErrors: Errors = {};
 
   err.inner.forEach((error) => {
