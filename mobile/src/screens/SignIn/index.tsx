@@ -1,4 +1,5 @@
 import React from 'react';
+import { TextInput } from 'react-native';
 
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
@@ -27,8 +28,10 @@ import {
 type SignInScreenProp = NativeStackNavigationProp<AuthStackList, 'SignIn'>;
 
 const SignIn: React.FC = () => {
-  const formRef = React.useRef<FormHandles>(null);
   const navigation = useNavigation<SignInScreenProp>();
+
+  const formRef = React.useRef<FormHandles>(null);
+  const passwordInputRef = React.useRef<TextInput>(null);
 
   const handleSignIn = React.useCallback((data: object) => {
     console.log(data);
@@ -46,8 +49,26 @@ const SignIn: React.FC = () => {
             </Wrapper>
 
             <Form ref={formRef} onSubmit={handleSignIn}>
-              <Input name="email" icon="mail" placeholder="E-mail" />
-              <Input name="password" icon="lock" placeholder="Senha" />
+              <Input
+                autoCorrect={false}
+                autoCapitalize="none"
+                keyboardType="email-address"
+                name="email"
+                icon="mail"
+                placeholder="E-mail"
+                returnKeyType="next"
+                onSubmitEditing={() => passwordInputRef.current?.focus()}
+              />
+
+              <Input
+                ref={passwordInputRef}
+                secureTextEntry
+                name="password"
+                icon="lock"
+                placeholder="Senha"
+                returnKeyType="send"
+                onSubmitEditing={() => formRef.current?.submitForm()}
+              />
 
               <Button onPress={() => formRef.current?.submitForm()}>
                 Entrar

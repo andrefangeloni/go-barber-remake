@@ -14,7 +14,14 @@ interface InputValueReference {
   value: string;
 }
 
-const Input: React.FC<InputProps> = ({ name, icon, ...rest }) => {
+interface InputRef {
+  focus(): void;
+}
+
+const Input: React.RefForwardingComponent<InputRef, InputProps> = (
+  { name, icon, ...rest },
+  ref,
+) => {
   const inputElementRef = React.useRef<any>(null);
 
   const { registerField, defaultValue = '', fieldName, error } = useField(name);
@@ -22,6 +29,12 @@ const Input: React.FC<InputProps> = ({ name, icon, ...rest }) => {
   const inputValueRef = React.useRef<InputValueReference>({
     value: defaultValue,
   });
+
+  React.useImperativeHandle(ref, () => ({
+    focus() {
+      inputElementRef.current.focus();
+    },
+  }));
 
   React.useEffect(() => {
     registerField<string>({
@@ -56,4 +69,4 @@ const Input: React.FC<InputProps> = ({ name, icon, ...rest }) => {
   );
 };
 
-export default Input;
+export default React.forwardRef(Input);
