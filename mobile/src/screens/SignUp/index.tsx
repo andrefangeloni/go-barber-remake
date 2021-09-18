@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { Form } from '@unform/mobile';
+import { FormHandles } from '@unform/core';
 import Feather from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
 
@@ -19,6 +21,7 @@ import {
 
 const SignUp: React.FC = () => {
   const navigation = useNavigation();
+  const formRef = React.useRef<FormHandles>(null);
 
   return (
     <>
@@ -31,11 +34,15 @@ const SignUp: React.FC = () => {
               <Title>Crie sua conta</Title>
             </Wrapper>
 
-            <Input name="name" icon="user" placeholder="Nome" />
-            <Input name="email" icon="mail" placeholder="E-mail" />
-            <Input name="password" icon="lock" placeholder="Senha" />
+            <Form ref={formRef} onSubmit={(data: object) => console.log(data)}>
+              <Input name="name" icon="user" placeholder="Nome" />
+              <Input name="email" icon="mail" placeholder="E-mail" />
+              <Input name="password" icon="lock" placeholder="Senha" />
 
-            <Button onPress={() => {}}>Entrar</Button>
+              <Button onPress={() => formRef.current?.submitForm()}>
+                Criar Conta
+              </Button>
+            </Form>
           </Container>
         </Scroll>
 

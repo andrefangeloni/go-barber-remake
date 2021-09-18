@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { Form } from '@unform/mobile';
+import { FormHandles } from '@unform/core';
 import Feather from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -25,7 +27,12 @@ import {
 type SignInScreenProp = NativeStackNavigationProp<AuthStackList, 'SignIn'>;
 
 const SignIn: React.FC = () => {
+  const formRef = React.useRef<FormHandles>(null);
   const navigation = useNavigation<SignInScreenProp>();
+
+  const handleSignIn = React.useCallback((data: object) => {
+    console.log(data);
+  }, []);
 
   return (
     <>
@@ -38,10 +45,14 @@ const SignIn: React.FC = () => {
               <Title>Faça seu logon</Title>
             </Wrapper>
 
-            <Input name="email" icon="mail" placeholder="E-mail" />
-            <Input name="password" icon="lock" placeholder="Senha" />
+            <Form ref={formRef} onSubmit={handleSignIn}>
+              <Input name="email" icon="mail" placeholder="E-mail" />
+              <Input name="password" icon="lock" placeholder="Senha" />
 
-            <Button onPress={() => {}}>Entrar</Button>
+              <Button onPress={() => formRef.current?.submitForm()}>
+                Entrar
+              </Button>
+            </Form>
 
             <ForgotPassword onPress={() => {}}>
               <ForgotPasswordText>Esqueci minha senha</ForgotPasswordText>
