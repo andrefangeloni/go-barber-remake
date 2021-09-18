@@ -1,6 +1,10 @@
 import React from 'react';
 
 import Feather from 'react-native-vector-icons/Feather';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import { AuthStackList } from '../../routes';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -18,34 +22,40 @@ import {
   CreateAccountButtonText,
 } from './styles';
 
-const SignIn: React.FC = () => (
-  <>
-    <KeyboardAvoidingView>
-      <Scroll>
-        <Container>
-          <Logo />
+type SignInScreenProp = NativeStackNavigationProp<AuthStackList, 'SignIn'>;
 
-          <Wrapper>
-            <Title>Faça seu logon</Title>
-          </Wrapper>
+const SignIn: React.FC = () => {
+  const navigation = useNavigation<SignInScreenProp>();
 
-          <Input name="email" icon="mail" placeholder="E-mail" />
-          <Input name="password" icon="lock" placeholder="Senha" />
+  return (
+    <>
+      <KeyboardAvoidingView>
+        <Scroll>
+          <Container>
+            <Logo />
 
-          <Button onPress={() => {}}>Entrar</Button>
+            <Wrapper>
+              <Title>Faça seu logon</Title>
+            </Wrapper>
 
-          <ForgotPassword onPress={() => {}}>
-            <ForgotPasswordText>Esqueci minha senha</ForgotPasswordText>
-          </ForgotPassword>
-        </Container>
-      </Scroll>
+            <Input name="email" icon="mail" placeholder="E-mail" />
+            <Input name="password" icon="lock" placeholder="Senha" />
 
-      <CreateAccountButton>
-        <Feather name="log-in" size={20} color="#ff9000" />
-        <CreateAccountButtonText>Criar uma conta</CreateAccountButtonText>
-      </CreateAccountButton>
-    </KeyboardAvoidingView>
-  </>
-);
+            <Button onPress={() => {}}>Entrar</Button>
+
+            <ForgotPassword onPress={() => {}}>
+              <ForgotPasswordText>Esqueci minha senha</ForgotPasswordText>
+            </ForgotPassword>
+          </Container>
+        </Scroll>
+
+        <CreateAccountButton onPress={() => navigation.navigate('SignUp')}>
+          <Feather name="log-in" size={20} color="#ff9000" />
+          <CreateAccountButtonText>Criar uma conta</CreateAccountButtonText>
+        </CreateAccountButton>
+      </KeyboardAvoidingView>
+    </>
+  );
+};
 
 export default SignIn;

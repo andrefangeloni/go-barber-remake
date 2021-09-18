@@ -4,18 +4,23 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SignIn from '../screens/SignIn';
 import SignUp from '../screens/SignUp';
 
-const Auth = createNativeStackNavigator();
+export type AuthStackList = {
+  SignIn: undefined;
+  SignUp: undefined;
+};
+
+const AuthStack = createNativeStackNavigator<AuthStackList>();
 
 const AuthRoutes: React.FC = () => (
-  <Auth.Navigator
+  <AuthStack.Navigator
     screenOptions={{
       headerShown: false,
       contentStyle: { backgroundColor: '#312e38' },
     }}
   >
-    <Auth.Screen name="SignIn" component={SignIn} />
-    <Auth.Screen name="SignUp" component={SignUp} />
-  </Auth.Navigator>
+    <AuthStack.Screen name="SignIn" component={SignIn} />
+    <AuthStack.Screen name="SignUp" component={SignUp} />
+  </AuthStack.Navigator>
 );
 
 export default AuthRoutes;
