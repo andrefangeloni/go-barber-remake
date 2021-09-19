@@ -8,7 +8,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { AuthStackList } from '../../routes';
+import { AuthStackList } from '../../routes/auth.routes';
 
 import { useAuth } from '../../hooks/auth';
 

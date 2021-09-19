@@ -1,26 +1,23 @@
 import React from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { View, ActivityIndicator } from 'react-native';
 
-import SignIn from '../screens/SignIn';
-import SignUp from '../screens/SignUp';
+import AppRoutes from './app.routes';
+import AuthRoutes from './auth.routes';
 
-export type AuthStackList = {
-  SignIn: undefined;
-  SignUp: undefined;
+import { useAuth } from '../hooks/auth';
+
+const Routes: React.FC = () => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator size="large" color="#999" />
+      </View>
+    );
+  }
+
+  return user ? <AppRoutes /> : <AuthRoutes />;
 };
 
-const AuthStack = createNativeStackNavigator<AuthStackList>();
-
-const AuthRoutes: React.FC = () => (
-  <AuthStack.Navigator
-    screenOptions={{
-      headerShown: false,
-      contentStyle: { backgroundColor: '#312e38' },
-    }}
-  >
-    <AuthStack.Screen name="SignIn" component={SignIn} />
-    <AuthStack.Screen name="SignUp" component={SignUp} />
-  </AuthStack.Navigator>
-);
-
-export default AuthRoutes;
+export default Routes;
