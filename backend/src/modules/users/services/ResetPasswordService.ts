@@ -4,18 +4,15 @@ import AppError from '@shared/errors/AppError';
 
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import IUserTokensRepository from '@modules/users/repositories/IUserTokensRepository';
-import IMailProvider from '@shared/container/providers/MailProvider/models/IMailProvider';
 
 interface Request {
-  email: string;
+  token: string;
+  password: string;
 }
 
 @injectable()
-class SendForgotEmailPasswordService {
+class ResetPasswordService {
   constructor(
-    @inject('MailProvider')
-    private mailProvider: IMailProvider,
-
     @inject('UsersRepository')
     private usersRepository: IUsersRepository,
 
@@ -23,20 +20,23 @@ class SendForgotEmailPasswordService {
     private userTokensRepository: IUserTokensRepository,
   ) {}
 
-  public async execute({ email }: Request): Promise<void> {
-    const user = await this.usersRepository.findByEmail(email);
+  public async execute({ token, password }: Request): Promise<void> {
+    const userToken = await this.userTokensRepository.findByToken(token);
+
+    if (!userToken) {
+      throw new AppError('invalid-token');
+    }
+
+    const user = await this.usersRepository.findById(userToken.user_id);
 
     if (!user) {
       throw new AppError('user-not-found');
     }
 
-    await this.userTokensRepository.generate(user.id);
+    user.password = password;
 
-    this.mailProvider.sendMail(
-      email,
-      'Pedido de recuperação de senha recebido.',
-    );
+    await this.usersRepository.save(user);
   }
 }
 
-export default SendForgotEmailPasswordService;
+export default ResetPasswordService;
