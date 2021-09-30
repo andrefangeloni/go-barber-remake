@@ -12,7 +12,14 @@ export default class ProfileController {
 
     const user = await showProfile.execute({ user_id });
 
-    return res.json(user);
+    const userWithoutPassword = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      avatar: user.avatar,
+    };
+
+    return res.json(userWithoutPassword);
   }
 
   public async update(req: Request, res: Response): Promise<Response> {
@@ -33,6 +40,7 @@ export default class ProfileController {
       id: user.id,
       name: user.name,
       email: user.email,
+      avatar: user.avatar,
     };
 
     return res.status(201).json(userWithoutPassword);
