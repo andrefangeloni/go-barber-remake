@@ -1,5 +1,11 @@
-# Dependencies
+# dependencies
 node_modules
+
+#env
+.env
+
+#databases config
+ormconfig.json
 
 # macOS
 .DS_Store
