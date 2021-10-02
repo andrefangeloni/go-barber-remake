@@ -1,7 +1,5 @@
 import 'reflect-metadata';
 
-import AppError from '@shared/errors/AppError';
-
 import ListProviderMonthAvailabilityService from './ListProviderMonthAvailabilityService';
 
 import FakeAppointmentsRepository from '@modules/appointments/repositories/fakes/FakeAppointmentsRepository';
