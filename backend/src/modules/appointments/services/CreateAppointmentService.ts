@@ -8,6 +8,8 @@ import Appointment from '@modules/appointments/infra/typeorm/entities/Appointmen
 import IAppointmentsRepository from '@modules/appointments/repositories/IAppointmentsRepository';
 import INotificationsRepository from '@modules/notifications/repositories/INotificationsRepository';
 
+import ICacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProvider';
+
 interface Request {
   date: Date;
   user_id: string;
@@ -22,6 +24,9 @@ class CreateAppointmentService {
 
     @inject('NotificationsRepository')
     private notificationsRepository: INotificationsRepository,
+
+    @inject('CacheProvider')
+    private cacheProvider: ICacheProvider,
   ) {}
 
   public async execute({
@@ -34,11 +39,11 @@ class CreateAppointmentService {
     if (isBefore(appointmentDate, Date.now())) {
       throw new AppError('past-date-not-allowed');
     }
-    
+
     if (user_id === provider_id) {
       throw new AppError('self-appointment-not-allowed');
     }
-    
+
     if (getHours(appointmentDate) < 8 || getHours(appointmentDate) > 17) {
       throw new AppError('hour-not-allowed');
     }
@@ -60,8 +65,15 @@ class CreateAppointmentService {
 
     await this.notificationsRepository.create({
       recipient_id: provider_id,
-      content: `Novo agendamento para o dia ${dateFormatted}`
+      content: `Novo agendamento para o dia ${dateFormatted}`,
     });
+
+    await this.cacheProvider.invalidate(
+      `provider-appointments:${provider_id}:${format(
+        appointmentDate,
+        'yyyy-M-d',
+      )}`,
+    );
 
     return appointment;
   }
