@@ -12,6 +12,8 @@ import Button from '../../components/Button';
 
 import { useToast } from '../../hooks/toast';
 
+import api from '../../services/api';
+
 import getValidationErrors from '../../utils/getValidationErrors';
 
 import { Container, Content, AnimationContainer, Background } from './styles';
@@ -22,6 +24,8 @@ interface ForgotPasswordFormData {
 }
 
 const ForgotPassword: React.FC = () => {
+  const [isLoading, setIsLoading] = React.useState(false);
+
   const formRef = React.useRef<FormHandles>(null);
 
   const { addToast } = useToast();
@@ -29,6 +33,8 @@ const ForgotPassword: React.FC = () => {
   const handleSubmit = React.useCallback(
     async (data: ForgotPasswordFormData) => {
       try {
+        setIsLoading(true);
+
         formRef.current?.setErrors({});
 
         const schema = Yup.object().shape({
@@ -41,7 +47,16 @@ const ForgotPassword: React.FC = () => {
           abortEarly: false,
         });
 
-        // TODO: recuperação de senha
+        await api.post('/password/forgot', {
+          email: data.email,
+        });
+
+        addToast({
+          type: 'success',
+          title: 'E-mail enviado com sucesso',
+        });
+
+        formRef.current?.clearField('email');
       } catch (err: any) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -52,10 +67,10 @@ const ForgotPassword: React.FC = () => {
 
         addToast({
           type: 'error',
-          title: 'Erro na recuperação de senha',
-          description:
-            'Ocorreu um erro ao tentar recuperar a senha, tente novamente',
+          title: 'Erro ao tentar recuperar a senha',
         });
+      } finally {
+        setIsLoading(false);
       }
     },
     [addToast],
@@ -72,7 +87,7 @@ const ForgotPassword: React.FC = () => {
 
             <Input name="email" icon={FiMail} placeholder="E-mail" />
 
-            <Button type="submit">Recuperar</Button>
+            <Button loading={isLoading} type="submit">Recuperar</Button>
           </Form>
 
           <Link to="/">
