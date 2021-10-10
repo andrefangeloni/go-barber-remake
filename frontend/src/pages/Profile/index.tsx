@@ -26,9 +26,9 @@ interface ProfileFormData {
 const Profile: React.FC = () => {
   const formRef = React.useRef<FormHandles>(null);
 
-  const { user } = useAuth();
   const history = useHistory();
   const { addToast } = useToast();
+  const { user, updateUser } = useAuth();
 
   const handleSubmit = React.useCallback(
     async (data: ProfileFormData) => {
@@ -74,6 +74,24 @@ const Profile: React.FC = () => {
     [history, addToast],
   );
 
+  const handleAvatarChange = React.useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files) {
+        const formData = new FormData();
+        formData.append('avatar', e.target.files[0]);
+
+        const { data } = await api.patch('/users/avatar', formData);
+        updateUser(data);
+
+        addToast({
+          type: 'success',
+          title: 'Avatar atualizado com sucesso',
+        });
+      }
+    },
+    [addToast, updateUser],
+  );
+
   return (
     <Container>
       <header>
@@ -96,9 +114,11 @@ const Profile: React.FC = () => {
           <AvatarInput>
             <img src={user.avatar_url} alt={user.name} />
 
-            <button type="button">
+            <label htmlFor="avatar">
               <FiCamera />
-            </button>
+
+              <input type="file" id="avatar" onChange={handleAvatarChange} />
+            </label>
           </AvatarInput>
 
           <h1>Meu perfil</h1>
