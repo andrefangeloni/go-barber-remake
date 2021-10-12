@@ -9,7 +9,7 @@ import Profile from '../screens/Profile';
 
 export type AppStackList = {
   Dashboard: undefined;
-  CreateAppointment: undefined;
+  CreateAppointment: { providerId: string };
   AppointmentCreated: undefined;
 
   Profile: undefined;
