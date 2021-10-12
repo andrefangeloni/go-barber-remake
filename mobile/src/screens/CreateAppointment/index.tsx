@@ -1,16 +1,43 @@
 import React from 'react';
-import { Button } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { useAuth } from '../../hooks/auth';
 
-import { Container } from './styles';
+import {
+  Container,
+  Header,
+  BackButton,
+  LeftIcon,
+  HeaderTitle,
+  UserAvatar,
+} from './styles';
+
+interface RouteParams {
+  providerId: string;
+}
 
 const CreateAppointment: React.FC = () => {
-  const { signOut } = useAuth();
+  const { params } = useRoute();
+  const { providerId } = params as RouteParams;
+
+  const { user } = useAuth();
+  const { goBack } = useNavigation();
+
+  const navigateBack = React.useCallback(() => {
+    goBack();
+  }, [goBack]);
 
   return (
     <Container>
-      <Button title="Sair" onPress={() => signOut()} />
+      <Header>
+        <BackButton onPress={() => navigateBack()}>
+          <LeftIcon />
+        </BackButton>
+
+        <HeaderTitle>Barbeiros</HeaderTitle>
+
+        <UserAvatar source={{ uri: user.avatar_url }} />
+      </Header>
     </Container>
   );
 };

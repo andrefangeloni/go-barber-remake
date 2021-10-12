@@ -4,7 +4,9 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useAuth } from '../../hooks/auth';
+
 import { AppStackList } from '../../routes/app.routes';
+
 import api from '../../services/api';
 
 import {
