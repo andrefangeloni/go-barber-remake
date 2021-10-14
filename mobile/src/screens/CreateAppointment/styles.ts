@@ -75,3 +75,27 @@ export const ProviderName = styled.Text<ProviderProps>`
   font-family: 'RobotoSlab-Medium';
   color: ${({ selected }) => (selected ? '#232129' : '#f4ede8')};
 `;
+
+export const Calendar = styled.View``;
+
+export const Title = styled.Text`
+  margin: 0 24px 24px;
+  font-size: 24px;
+  font-family: 'RobotoSlab-Medium';
+  color: #f4ede8;
+`;
+
+export const OpenDatePickerButton = styled.TouchableOpacity`
+  height: 46px;
+  margin: 0 24px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: #ff9000;
+`;
+
+export const OpenDatePickerButtonText = styled.Text`
+  font-size: 16px;
+  font-family: 'RobotoSlab-Medium';
+  color: #232129;
+`;
