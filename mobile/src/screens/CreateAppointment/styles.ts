@@ -9,6 +9,11 @@ interface ProviderProps {
   selected: boolean;
 }
 
+interface HourProps {
+  available?: boolean;
+  selected: boolean;
+}
+
 export const Container = styled.ScrollView.attrs({
   showsVerticalScrollIndicator: false,
 })`
@@ -98,6 +103,56 @@ export const OpenDatePickerButton = styled.TouchableOpacity`
 
 export const OpenDatePickerButtonText = styled.Text`
   font-size: 16px;
+  font-family: 'RobotoSlab-Medium';
+  color: #232129;
+`;
+
+export const Schedule = styled.View`
+  padding: 24px 0 16px;
+`;
+
+export const Section = styled.View`
+  margin-bottom: 24px;
+`;
+
+export const SectionTitle = styled.Text`
+  margin: 0 24px 12px;
+  font-size: 18px;
+  font-family: 'RobotoSlab-Regular';
+  color: #999591;
+`;
+
+export const SectionContent = styled.ScrollView.attrs({
+  horizontal: true,
+  showsHorizontalScrollIndicator: false,
+  contentContainerStyle: { paddingLeft: 24, paddingRight: 16 },
+})``;
+
+export const Hour = styled.TouchableOpacity<HourProps>`
+  padding: 12px;
+  margin-right: 8px;
+  border-radius: 10px;
+  background: ${({ selected }) => (selected ? '#ff9000' : '#3e3b47')};
+  opacity: ${({ available }) => (available ? 1 : 0.3)};
+`;
+
+export const HourText = styled.Text<HourProps>`
+  font-size: 16px;
+  font-family: 'RobotoSlab-Regular';
+  color: ${({ selected }) => (selected ? '#232129' : '#f4ede8')};
+`;
+
+export const CreateAppointmentButton = styled.TouchableOpacity`
+  height: 50px;
+  margin: 0 24px 24px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: #ff9000;
+`;
+
+export const CreateAppointmentButtonText = styled.Text`
+  font-size: 18px;
   font-family: 'RobotoSlab-Medium';
   color: #232129;
 `;
