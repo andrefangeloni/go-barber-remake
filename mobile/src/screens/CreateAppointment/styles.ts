@@ -9,7 +9,9 @@ interface ProviderProps {
   selected: boolean;
 }
 
-export const Container = styled.View`
+export const Container = styled.ScrollView.attrs({
+  showsVerticalScrollIndicator: false,
+})`
   flex: 1;
 `;
 
