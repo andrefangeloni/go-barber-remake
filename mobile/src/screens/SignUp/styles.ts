@@ -14,6 +14,7 @@ export const KeyboardAvoidingView = styled.KeyboardAvoidingView.attrs({
 export const Scroll = styled.ScrollView.attrs({
   contentContainerStyle: { flex: 1 },
   keyboardShouldPersistTaps: 'handled',
+  showsVerticalScrollIndicator: false,
 })``;
 
 export const Container = styled.View`

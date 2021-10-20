@@ -32,7 +32,7 @@ interface SignUpFormData {
 }
 
 const SignUp: React.FC = () => {
-  const navigation = useNavigation();
+  const { goBack } = useNavigation();
 
   const formRef = React.useRef<FormHandles>(null);
   const emailInputRef = React.useRef<TextInput>(null);
@@ -62,7 +62,7 @@ const SignUp: React.FC = () => {
           'Você já pode fazer login na aplicação',
         );
 
-        navigation.goBack();
+        goBack();
       } catch (err: any) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -77,7 +77,7 @@ const SignUp: React.FC = () => {
         }
       }
     },
-    [navigation],
+    [goBack],
   );
 
   return (
@@ -131,7 +131,7 @@ const SignUp: React.FC = () => {
           </Container>
         </Scroll>
 
-        <BackToSignIn onPress={() => navigation.goBack()}>
+        <BackToSignIn onPress={() => goBack()}>
           <Feather name="arrow-left" size={20} color="#fff" />
           <BackToSignInText>Voltar para logon</BackToSignInText>
         </BackToSignIn>
