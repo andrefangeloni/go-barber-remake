@@ -27,14 +27,16 @@ import {
   KeyboardAvoidingView,
 } from './styles';
 
-interface SignUpFormData {
+interface ProfileFormData {
   name: string;
   email: string;
   password: string;
+  old_password: string;
+  password_confirmation: string;
 }
 
 const Profile: React.FC = () => {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const { goBack } = useNavigation();
 
   const formRef = React.useRef<FormHandles>(null);
@@ -43,8 +45,8 @@ const Profile: React.FC = () => {
   const oldPasswordInputRef = React.useRef<TextInput>(null);
   const confirmPasswordInputRef = React.useRef<TextInput>(null);
 
-  const handleSignUp = React.useCallback(
-    async (data: SignUpFormData) => {
+  const handleUpdateProfile = React.useCallback(
+    async (data: ProfileFormData) => {
       try {
         formRef.current?.setErrors({});
 
@@ -53,19 +55,42 @@ const Profile: React.FC = () => {
           email: Yup.string()
             .required('E-mail obrigatório')
             .email('Digite um e-mail válido'),
-          password: Yup.string().min(6, 'Mínimo 6 dígitos'),
+          old_password: Yup.string(),
+          password: Yup.string().when('old_password', {
+            is: (val: string) => !!val.length,
+            then: Yup.string().required('Campo obrigatório'),
+            otherwise: Yup.string(),
+          }),
+          password_confirmation: Yup.string()
+            .when('old_password', {
+              is: (val: string) => !!val.length,
+              then: Yup.string().required('Campo obrigatório'),
+              otherwise: Yup.string(),
+            })
+            .oneOf([Yup.ref('password'), null], 'Senhas não conferem'),
         });
 
         await schema.validate(data, {
           abortEarly: false,
         });
 
-        await api.post('/users', data);
+        const { name, email, password, old_password, password_confirmation } =
+          data;
 
-        Alert.alert(
-          'Cadastro realizado com sucesso!',
-          'Você já pode fazer login na aplicação',
-        );
+        const formData = {
+          name,
+          email,
+          ...(old_password
+            ? {
+                old_password,
+                password,
+                password_confirmation,
+              }
+            : {}),
+        };
+
+        const response = await api.put('/profile', formData);
+        updateUser(response.data);
 
         goBack();
       } catch (err: any) {
@@ -74,15 +99,15 @@ const Profile: React.FC = () => {
           formRef.current?.setErrors(errors);
 
           Alert.alert(
-            'Erro no cadastro',
-            'Ocorreu um erro ao se cadastrar, tente novamente',
+            'Erro',
+            'Não foi possível atualizar o perfil. Tente novamente mais tarde',
           );
 
           return;
         }
       }
     },
-    [goBack],
+    [goBack, updateUser],
   );
 
   return (
@@ -100,7 +125,11 @@ const Profile: React.FC = () => {
 
             <Title>Meu perfil</Title>
 
-            <Form ref={formRef} onSubmit={handleSignUp}>
+            <Form
+              ref={formRef}
+              initialData={user}
+              onSubmit={handleUpdateProfile}
+            >
               <Input
                 autoCapitalize="words"
                 name="name"
