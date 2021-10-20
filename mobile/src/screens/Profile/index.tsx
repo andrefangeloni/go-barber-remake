@@ -5,6 +5,10 @@ import * as Yup from 'yup';
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
 import { useNavigation } from '@react-navigation/native';
+import {
+  launchImageLibrary,
+  ImageLibraryOptions,
+} from 'react-native-image-picker';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -110,6 +114,44 @@ const Profile: React.FC = () => {
     [goBack, updateUser],
   );
 
+  const handleUpdateAvatar = React.useCallback(() => {
+    const options = {
+      quality: 1,
+      maxWidth: 400,
+      maxHeight: 400,
+      mediaType: 'photo',
+    } as ImageLibraryOptions;
+
+    launchImageLibrary(options, async (response) => {
+      if (response.didCancel) {
+        return;
+      }
+
+      if (response.errorCode) {
+        Alert.alert(
+          'Erro',
+          'Não foi possível atualizar o avatar. Tente novamente',
+        );
+
+        return;
+      }
+
+      if (response.assets) {
+        const data = {
+          uri: response.assets[0].uri,
+          type: response.assets[0].type,
+          name: response.assets[0].fileName,
+        };
+
+        const formData = new FormData();
+        formData.append('avatar', data);
+
+        const res = await api.patch('/users/avatar', formData);
+        updateUser(res.data);
+      }
+    });
+  }, [updateUser]);
+
   return (
     <>
       <KeyboardAvoidingView>
@@ -119,7 +161,7 @@ const Profile: React.FC = () => {
               <BackButtonIcon />
             </BackButton>
 
-            <UserAvatarButton>
+            <UserAvatarButton onPress={() => handleUpdateAvatar()}>
               <UserAvatar source={{ uri: user.avatar_url }} />
             </UserAvatarButton>
 
