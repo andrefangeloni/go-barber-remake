@@ -70,7 +70,7 @@ const CreateAppointment: React.FC = () => {
   const [availability, setAvailability] = React.useState<Availability[]>([]);
 
   const { user } = useAuth();
-  const { goBack, navigate } = useNavigation<CreateAppointmentScreenProp>();
+  const { goBack, reset } = useNavigation<CreateAppointmentScreenProp>();
 
   React.useEffect(() => {
     const loadProviders = async () => {
@@ -141,8 +141,14 @@ const CreateAppointment: React.FC = () => {
         provider_id: selectedProvider,
       });
 
-      navigate('AppointmentCreated', {
-        date: date.getTime(),
+      reset({
+        index: 0,
+        routes: [
+          {
+            name: 'AppointmentCreated',
+            params: { date: date.getTime() },
+          },
+        ],
       });
     } catch (err) {
       Alert.alert(
@@ -150,7 +156,7 @@ const CreateAppointment: React.FC = () => {
         'Ocorreu um erro ao tentar criar o agendamento, tente novamente mais tarde',
       );
     }
-  }, [selectedProvider, selectedHour, selectedDate, navigate]);
+  }, [selectedProvider, selectedHour, selectedDate, reset]);
 
   const morningAvailability = React.useMemo(() => {
     return availability
