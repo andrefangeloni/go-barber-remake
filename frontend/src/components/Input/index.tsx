@@ -37,7 +37,12 @@ const Input: React.FC<InputProps> = ({ name, icon: Icon, ...rest }) => {
   }, []);
 
   return (
-    <Container isErrored={!!error} isFocused={isFocused} isFilled={isFilled}>
+    <Container
+      isErrored={!!error}
+      isFilled={isFilled}
+      isFocused={isFocused}
+      data-testid="input-container"
+    >
       {Icon ? <Icon size={20} /> : null}
       <input
         onFocus={() => handleInputFocus()}
